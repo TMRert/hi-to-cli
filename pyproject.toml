@@ -1,0 +1,105 @@
+# use `pip install --no-use-pep517` to force legacy behavior which ignores this file.
+[tool.poetry]
+name = "clhi"
+version = "0.0.1"
+description = "CLI AI tooling to allow users to ask questions on their CLI commands"
+authors = ["Tim Rietveld <trietveld@lely.com>", "Bulut Ficici <bficici@lely.com>"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+]
+readme = "README.md"
+[tool.poetry.dependencies]
+python = "^3.8.1"
+click = "<8.0.4"
+click-pathlib = "^2020.3.13.0"
+databricks-vectorsearch = "^0.22"
+databricks-sdk= "^0.18.0"
+langchain = "^0.1.5"
+
+
+identify = "^2.5.36"
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.1"
+flake8 = "^3.7"
+black = "^21.12b0"
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
+coverage = "^6.2"
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+[tool.pytest.ini_options]
+addopts = "-s -p no:warnings"
+log_cli = "1"
+log_cli_level = "INFO"
+log_cli_format = "[pytest][%(asctime)s][%(levelname)s][%(module)s][%(funcName)s] %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_level = "INFO"
+testpaths = [
+    "tests",
+]
+[tool.poetry.scripts]
+hi = "clhi.cli.clhi:hi"
+[tool.coverage.run]
+omit = [
+    "venv/*",
+    "notebooks/*",
+    "*__init__*",
+    "tests/*",
+    "templates/*",
+    "docs/*",
+    ".vscode/*",
+]
+[tool.black]
+line-length = 100
+target-version = ['py36']
+include = '''
+(
+    \.pyi?
+  | \.ipynb
+  | \.*SCon((script)|(struct))
+)$
+'''
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.nox
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | _build
+  | dist
+  | tmp
+  | tmp_build
+  | tmp_cython
+  | gen
+  | reports
+  | \.egg-info
+  | venv
+  | \.idea
+  | \.svn
+)/
+'''
+[tool.isort]
+profile = "black"
+line_length = 100
+force_single_line = true
+skip_gitignore = true
+sort_order = "native"
+[tool.pylint]
+    [tool.pylint.Master]
+    jobs = 0
+    persistent = ["no"]
