@@ -1,0 +1,106 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_language_version:
+    # force all unspecified python hooks to run python3
+    python: python3
+repos:
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.6.0
+      hooks:
+          - id: check-added-large-files
+          - id: check-ast
+          - id: check-case-conflict
+          - id: check-executables-have-shebangs
+          - id: check-json
+          - id: check-shebang-scripts-are-executable
+          - id: check-merge-conflict
+          - id: check-symlinks
+          - id: check-toml
+          - id: check-vcs-permalinks
+          - id: check-xml
+          - id: check-yaml
+            args: [--unsafe]
+          - id: destroyed-symlinks
+          - id: detect-aws-credentials
+            args: [--allow-missing-credentials]
+          - id: detect-private-key
+          - id: end-of-file-fixer
+          - id: fix-byte-order-marker
+          - id: mixed-line-ending
+            args: [--fix=lf]
+            exclude: '.*\.(bat|cmd|ps1)'
+          - id: mixed-line-ending
+            args: [--fix=crlf]
+            files: '.*\.(bat|cmd|ps1)'
+          - id: no-commit-to-branch
+          - id: requirements-txt-fixer
+    - repo: https://github.com/asottile/pyupgrade
+      rev: v3.16.0
+      hooks:
+          - id: pyupgrade
+            args: [--py3-plus]
+    - repo: https://github.com/pycqa/isort
+      # Configuration file: pyproject.toml
+      rev: 5.13.2
+      hooks:
+          - id: isort
+            name: isort (python)
+            args: ["--resolve-all-configs"]
+          - id: isort
+            name: isort (cython)
+            types: [cython]
+            args: ["--resolve-all-configs"]
+          - id: isort
+            name: isort (pyi)
+            types: [pyi]
+            args: ["--resolve-all-configs"]
+    - repo: https://github.com/asottile/blacken-docs
+      # Configuration file: pyproject.toml
+      rev: 1.16.0
+      hooks:
+          - id: blacken-docs
+            additional_dependencies: [black==22.6.0]
+    - repo: https://github.com/pre-commit/mirrors-prettier
+      # Configuration file: .prettierrc.toml
+      rev: v4.0.0-alpha.8
+      hooks:
+          - id: prettier
+    - repo: https://github.com/kynan/nbstripout
+      rev: 0.7.1
+      hooks:
+          - id: nbstripout # Requires to be run under `bash`.
+    - repo: https://github.com/psf/black
+      # Configuration file: pyproject.toml
+      rev: 24.4.2
+      hooks:
+          - id: black
+          - id: black-jupyter
+    - repo: https://github.com/ducminh-phan/reformat-gherkin
+      rev: v3.0.1
+      hooks:
+          - id: reformat-gherkin
+    - repo: https://github.com/jumanjihouse/pre-commit-hooks
+      # Requires installation of additional tool. Tool is available on Windows.
+      # shfmt: https://github.com/mvdan/sh/releases
+      rev: 3.0.0
+      hooks:
+          - id: shfmt
+            args: [-w, -s]
+    - repo: https://github.com/pre-commit/mirrors-clang-format
+      rev: v18.1.4
+      hooks:
+          - id: clang-format
+            exclude_types: [json, javascript]
+            exclude: '.*\.m'
+    - repo: https://github.com/cheshirekow/cmake-format-precommit
+      rev: v0.6.13
+      hooks:
+          - id: cmake-format
+            additional_dependencies: [pyyaml>=5.1]
+    - repo: https://github.com/antonbabenko/pre-commit-terraform
+      # Requires installation of additional tool. Tool is available on Windows.
+      # HashiCorp Terraform: https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform=
+      rev: v1.91.0
+      hooks:
+          - id: terraform_fmt
+            args: [--args=-recursive]

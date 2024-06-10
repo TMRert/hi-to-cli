@@ -28,6 +28,7 @@ black = "^21.12b0"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
 coverage = "^6.2"
+pyautogui = "^0.9.54"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
