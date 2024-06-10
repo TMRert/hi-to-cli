@@ -32,16 +32,20 @@ def hi():
         )
         c = click.getchar()
         if c.lower() == "a":
-            output_lines = model_response.splitlines()[0]
-            if "`" in output_lines[0]:  # Handle cases where the model wraps the generated command in backticks
-                command = model_response.splitlines()[1]
+            output_lines = model_response.splitlines()
+            for i in range(len(output_lines)):
+                if "```" in output_lines[i]: # Handle cases where the model wraps the generated command in backticks
+                    command = output_lines[i+1]
+
+                    # Run command
+                    if click.confirm(command):
+                        subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             else:
-                command = model_response.splitlines()[0]
+                click.echo("I did not find an executable command in my recommendation to apply.")
+                break
 
-            # Run command
-            subprocess.Popen(command, stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
-            break
+
 
         if c.lower() == "q":
             prompt_completed = True
