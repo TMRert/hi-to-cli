@@ -29,7 +29,7 @@ CLHI is an AI-based terminal assistant that leverages natural language to provid
 
 ## Usage
 
-Just say hi to your AI assistant like you are chatting with a friend:
+Say hi to your CLI:
    ```bash
    hi
    ```
