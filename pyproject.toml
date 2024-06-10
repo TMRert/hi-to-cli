@@ -20,9 +20,9 @@ databricks-sdk= "^0.18.0"
 langchain = "^0.1.5"
 
 
-identify = "^2.5.36"
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.1"
+identify = "^2.5.36"
 flake8 = "^3.7"
 black = "^21.12b0"
 pytest = "^6.2.5"

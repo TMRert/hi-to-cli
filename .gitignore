@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-=======
-# Created by https://www.toptal.com/developers/gitignore/api/pycharm,visualstudiocode,python
-# Edit at https://www.toptal.com/developers/gitignore?templates=pycharm,visualstudiocode,python
+# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,pycharm
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,pycharm
 
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -117,7 +115,6 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 ### Python ###
->>>>>>> 3b2583e (Build small CLI tool to be able to interface with LLM from CLI)
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -226,15 +223,8 @@ ipython_config.py
 #pdm.lock
 #   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
 #   in version control.
-<<<<<<< HEAD
-#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
-.pdm.toml
-.pdm-python
-.pdm-build/
-=======
 #   https://pdm.fming.dev/#use-with-ide
 .pdm.toml
->>>>>>> 3b2583e (Build small CLI tool to be able to interface with LLM from CLI)
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
@@ -285,15 +275,19 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-<<<<<<< HEAD
-=======
 
 ### Python Patch ###
 # Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
 poetry.toml
 
+# ruff
+.ruff_cache/
+
+# LSP config files
+pyrightconfig.json
+
 ### VisualStudioCode ###
-.vscode
+.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -311,11 +305,4 @@ poetry.toml
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/pycharm,visualstudiocode,python
-notebooks
-
-# test yamls
-datasets.yaml
-permissions.yaml
-teams.yaml
->>>>>>> 3b2583e (Build small CLI tool to be able to interface with LLM from CLI)
+# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,pycharm
