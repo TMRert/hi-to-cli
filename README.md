@@ -9,8 +9,8 @@ CLHI is an AI-based terminal assistant that leverages natural language to provid
 ## Features
 
 - **Problem Statements:** New users often spend a considerable amount of time getting acquainted with terminal commands. This project aims to make developers life easier.
-- **Data Sets:** Check out the HuggingFace dataset for Linux Manual Pages, available at: https://huggingface.co/datasets/tmskss/linux-man-pages-tldr-summarized?row=0
-- **Resources:** Databricks Workspace provided by DAIS organization for creating Vector Search index and endpoint. 
+- **Data Sets:** Check out the HuggingFace dataset for Linux Manual Pages, available at: https://huggingface.co/datasets/tmskss/linux-man-pages-tldr-summarized
+- **Resources:** Databricks Workspace provided by DAIS organization for creating Vector Search index and endpoint. Implemented poetry for dependency management. Provided terminal history as a context for the model as well.
 
 ## Setup
 
