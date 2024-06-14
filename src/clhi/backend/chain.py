@@ -5,24 +5,22 @@ from langchain.chains import RetrievalQA
 from databricks.vector_search.client import VectorSearchClient
 from langchain_community.vectorstores import DatabricksVectorSearch
 from langchain_community.embeddings import DatabricksEmbeddings
-import subprocess
-from langchain.schema.runnable import RunnableLambda
+from langchain.schema.runnable import RunnableLambda, RunnablePassthrough, RunnableParallel
 from operator import itemgetter
+from clhi.backend.terminal_utils import get_command_history
 
 PROMPT_TEMPLATE = """You are an assistant for Linux Terminal users. You are answering questions related with terminal commands and your goal is to generate a relevant CLI command the user can run in their CLI.
-
 Make sure to return the generated CLI command as the first line of your response, followed by an explanation of the command and possibly any arguments or option flags you used. Wrap or surround the generated command with a ```bash``` codeblock with backticks. Make sure the command is one-to-one copy-pastable into a terminal.
-You can use the following historical CLI commands of the user related to this question to generate a CLI command to their question:
-{context}
-
-Here is the chat history between you and the human: {chat_history}
 
 Question: {question}
 
-If the question is not related to one of these topics, kindly decline to answer. If you don't know the answer, just say that you don't know, don't try to make up an answer. Keep the answer as concise as possible.
-Answer:
+You can use the following relevant Linux Manual documentation to provide a response: {summaries}
+Use the user's historical CLI commands to generate customized recommendations: {commands}
+
+Here is the chat history between you and the human: {chat_history}
 """
 
+RETRIEVED_DOCS = {}
 
 def get_vectorstore_retriever():
     embedding_model = DatabricksEmbeddings(endpoint="databricks-gte-large-en")
@@ -35,7 +33,10 @@ def get_vectorstore_retriever():
 
     # Create the retriever
     vectorstore = DatabricksVectorSearch(
-        vs_index, text_column="Text", embedding=embedding_model
+        vs_index,
+        text_column="Text",
+        embedding=embedding_model,
+        columns=["Command", "Summary"]
     )
 
     return vectorstore.as_retriever()
@@ -44,44 +45,49 @@ def get_embeddings(user_input: str):
     vectorstore = get_vectorstore_retriever()
     similar_documents = vectorstore.invoke(user_input)
     command_history = [x.metadata["Command"] for x in similar_documents]
-    return similar_documents, command_history
-
-def get_command_history(command):
-    history = subprocess.Popen(f"cat ~/.zsh_history | grep -m 5 {command}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    command_summary = [x.metadata["Summary"] for x in similar_documents]
     
-    history_array = []
-    for line in history.stdout.readlines():
-        history_array.append(line.decode("utf-8").split(";")[1].strip())
-    
-    return history_array
+    return command_history, command_summary
 
 #The question is the last entry of the history
 def extract_question(input):
     return input[-1]["content"]
 
-#The history is everything before the last question
-def extract_cli_history(input):
-    question = extract_question(input)
-    similar_commands = get_embeddings(question)
-    output_array = []
-
-    for command in similar_commands:
-        output_array.extend(get_command_history(command))
-    return output_array
 
 def extract_chat_history(input):
     return input[:-1]
 
+
+#The history is everything before the last question
+def extract_cli_info(input):
+    question = extract_question(input)
+    command_list, command_summaries = get_embeddings(question)
+    output_array = []
+
+    for command in command_list:
+        output_array.extend(get_command_history(command))
+    return {"commands": output_array, "summaries": command_summaries}
+
 def build_chain():
-    prompt = PromptTemplate(template=PROMPT_TEMPLATE, input_variables=["context", "question"])
-    chat_model = ChatDatabricks(endpoint="databricks-dbrx-instruct", max_tokens = 1000)
+    prompt = PromptTemplate(
+        template=PROMPT_TEMPLATE,
+        input_variables=["question", "commands", "summaries", "chat_history"],
+    )
+    chat_model = ChatDatabricks(endpoint="databricks-dbrx-instruct", max_tokens = 4096)
 
     chain_with_cli_history = (
     {
         "question": itemgetter("messages") | RunnableLambda(extract_question),
         "chat_history": itemgetter("messages") | RunnableLambda(extract_chat_history),
-        "context": itemgetter("messages") | RunnableLambda(extract_cli_history),
-    }
+        "cli_info": itemgetter("messages") | RunnableLambda(extract_cli_info)
+
+    } 
+    | RunnableParallel(
+        question=lambda x: x["question"],
+        chat_history=lambda x: x["chat_history"],
+        commands=lambda x: x["cli_info"]["commands"],
+        summaries=lambda x: x["cli_info"]["summaries"]
+    )
     | prompt
     | chat_model
     | StrOutputParser()

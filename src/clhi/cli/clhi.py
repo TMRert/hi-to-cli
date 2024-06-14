@@ -1,13 +1,35 @@
-import click
 from clhi.backend.chain import build_chain
+from clhi.cli.utils import invoke_model, handle_user_response
+
+import click
+import questionary
+from questionary import Choice
+
 import logging
-import subprocess
-import warnings
+from textwrap import dedent
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
-logging.basicConfig(filename="logging.txt",level=logging.INFO)
+logging.basicConfig(filename="logging.txt", level=logging.INFO)
 
+
+from questionary import Style
+
+custom_style_fancy = Style(
+    [
+        ("qmark", "fg:#673ab7 bold"),  # token in front of the question
+        ("question", "bold"),  # question text
+        ("answer", "fg:#f44336 bold"),  # submitted answer text behind the question
+        ("pointer", "fg:#673ab7 bold"),  # pointer used in select and checkbox prompts
+        ("highlighted", "fg:#673ab7 bold"),  # pointed-at choice in select and checkbox prompts
+        ("selected", "fg:#cc5454"),  # style for a selected item of a checkbox
+        ("separator", "fg:#cc5454"),  # separator in lists
+        ("instruction", ""),  # user instructions for select, rawselect, checkbox
+        ("text", ""),  # plain text
+        ("disabled", "fg:#858585 italic"),  # disabled choices for select and checkbox prompts
+    ]
+)
 
 
 @click.command(
@@ -15,45 +37,38 @@ logging.basicConfig(filename="logging.txt",level=logging.INFO)
     epilog="This tool is built as part of the Databricks Data&AI Hackathon 2024.",
 )
 def hi():
-    user_input = click.prompt("Ask me anything about the CLI!")
-
-    question_buffer = [{"role": "user", "content": user_input}]
-    formatted_input = {"messages": question_buffer}
-
+    click.clear()
     chain = build_chain()
-    model_response = chain.invoke(formatted_input)
-    click.echo(model_response)
+    context_buffer = []
+    model_output = invoke_model(
+        chain,
+        context_buffer,
+        cli_prompt="Hi, ask me anything about the CLI!",
+        questionary_style=custom_style_fancy,
+    )
 
-    prompt_completed = False
+    while True:
+        user_resp = questionary.rawselect(
+            "How would you like to proceed?",
+            choices=[
+                Choice("Appy the CLI Command", "a", shortcut_key="a"),
+                Choice("Edit the CLI Command", "e", shortcut_key="e"),
+                Choice("Ask follow-up question", "f", shortcut_key="f"),
+                Choice("Quit", "q", shortcut_key="q"),
+            ],
+            style=custom_style_fancy
+        ).ask()
+        prompt_completed = handle_user_response(user_resp, model_output, context_buffer)
+        if prompt_completed:
+            break
 
-    while not prompt_completed:
-        click.echo(
-            "Type [a] to apply the proposed CLI command, Type [f] to ask a follow-up question, type [q]' to quit the prompt"
+        model_output = invoke_model(
+            chain,
+            context_buffer,
+            cli_prompt="How can I help you further?",
+            questionary_style=custom_style_fancy,
         )
-        c = click.getchar()
-        if c.lower() == "a":
-            output_lines = model_response.splitlines()
-            for i in range(len(output_lines)):
-                if "```" in output_lines[i]: # Handle cases where the model wraps the generated command in backticks
-                    command = output_lines[i+1]
-
-                    # Run command
-                    if click.confirm(command):
-                        subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-            else:
-                click.echo("I did not find an executable command in my recommendation to apply.")
-                break
 
 
-
-        if c.lower() == "q":
-            prompt_completed = True
-
-        if c.lower() == "f":
-            model_response
-            question_buffer.append({"role": "assistant", "content": model_response})
-            followup_input = click.prompt("How can I elaborate?")
-            question_buffer.append({"role": "user", "content": followup_input})
-            model_response = chain.invoke(formatted_input)
-            click.echo(model_response)
+if __name__ == "__main__":
+    hi()
