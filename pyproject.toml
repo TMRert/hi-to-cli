@@ -18,7 +18,7 @@ click-pathlib = "^2020.3.13.0"
 databricks-vectorsearch = "^0.22"
 databricks-sdk= "^0.18.0"
 langchain = "^0.1.5"
-
+questionary = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.1"
@@ -28,7 +28,8 @@ black = "^21.12b0"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
 coverage = "^6.2"
-pyautogui = "^0.9.54"
+commitizen = "^3.27.0"
+
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
