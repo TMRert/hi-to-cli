@@ -21,7 +21,7 @@ langchain = "^0.1.5"
 questionary = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.1"
+pre-commit = "^3.7"
 identify = "^2.5.36"
 flake8 = "^3.7"
 black = "^21.12b0"
