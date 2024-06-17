@@ -1,15 +1,19 @@
-from langchain.prompts import PromptTemplate
-from langchain_community.chat_models import ChatDatabricks
-from langchain.schema.output_parser import StrOutputParser
-from langchain.schema.runnable import RunnableLambda, RunnableParallel
-from databricks.vector_search.client import VectorSearchClient
-from langchain_core.vectorstores import VectorStoreRetriever
-from langchain_core.runnables.base import RunnableSequence
-from langchain_community.vectorstores import DatabricksVectorSearch
-from langchain_community.embeddings import DatabricksEmbeddings
 from operator import itemgetter
+from typing import Dict
+from typing import List
+from typing import Tuple
 
-from typing import List, Tuple, Dict
+from databricks.vector_search.client import VectorSearchClient
+from langchain.prompts import PromptTemplate
+from langchain.schema.output_parser import StrOutputParser
+from langchain.schema.runnable import RunnableLambda
+from langchain.schema.runnable import RunnableParallel
+from langchain_community.chat_models import ChatDatabricks
+from langchain_community.embeddings import DatabricksEmbeddings
+from langchain_community.vectorstores import DatabricksVectorSearch
+from langchain_core.runnables.base import RunnableSequence
+from langchain_core.vectorstores import VectorStoreRetriever
+
 from clhi.backend.terminal_utils import get_command_history
 
 PROMPT_TEMPLATE = """You are an assistant for Linux Terminal users. You are answering questions related with terminal commands and your goal is to generate a relevant CLI command the user can run in their CLI.

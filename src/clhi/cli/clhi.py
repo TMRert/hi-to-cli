@@ -1,12 +1,14 @@
-from clhi.backend.chain import build_chain
-from clhi.cli.utils import invoke_model, handle_user_response
+import logging
+from textwrap import dedent
 
 import click
 import questionary
-from questionary import Choice, Style
+from questionary import Choice
+from questionary import Style
 
-import logging
-from textwrap import dedent
+from clhi.backend.chain import build_chain
+from clhi.cli.utils import handle_user_response
+from clhi.cli.utils import invoke_model
 
 # Set logger to log to file to prevent debug output in the terminal.
 logger = logging.getLogger(__name__)

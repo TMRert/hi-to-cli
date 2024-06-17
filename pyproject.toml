@@ -8,11 +8,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.11",
 ]
 readme = "README.md"
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.11.9"
 click = "<8.0.4"
 click-pathlib = "^2020.3.13.0"
 databricks-vectorsearch = "^0.22"
@@ -63,7 +63,7 @@ omit = [
 ]
 [tool.black]
 line-length = 100
-target-version = ['py36']
+target-version = ['py310']
 include = '''
 (
     \.pyi?

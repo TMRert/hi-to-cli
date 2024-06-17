@@ -1,11 +1,13 @@
-from clhi.backend.terminal_utils import apply_command
+from typing import Dict
+from typing import List
+from typing import Tuple
 
 import click
 import questionary
-
-from typing import List, Dict, Tuple
 from langchain_core.runnables.base import RunnableSequence
 from questionary import Style
+
+from clhi.backend.terminal_utils import apply_command
 
 
 def invoke_model(
