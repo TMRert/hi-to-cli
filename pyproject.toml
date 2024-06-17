@@ -1,7 +1,7 @@
 # use `pip install --no-use-pep517` to force legacy behavior which ignores this file.
 [tool.poetry]
 name = "clhi"
-version = "0.0.1"
+version = "0.1.0"
 description = "CLI AI tooling to allow users to ask questions on their CLI commands"
 authors = ["Tim Rietveld <trietveld@lely.com>", "Bulut Ficici <bficici@lely.com>"]
 classifiers = [
