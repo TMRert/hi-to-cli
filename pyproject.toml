@@ -23,7 +23,7 @@ questionary = "^2.0.1"
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.1"
 identify = "^2.5.36"
-flake8 = "^3.7"
+flake8 = "^7.1"
 black = "^21.12b0"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
